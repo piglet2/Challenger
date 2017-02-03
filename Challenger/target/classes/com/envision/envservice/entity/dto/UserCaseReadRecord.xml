@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCaseReadRecordDao">
+
+	<resultMap id="UserCaseReadRecord" type="com.envision.envservice.entity.dto.UserCaseReadRecord" >
+		<id property="id" column="id" />
+		<result property="caseId" column="case_id" />
+		<result property="userId" column="user_id" />
+		<result property="hasRead" column="has_read" />
+		<result property="time" column="time" />
+	</resultMap>
+	
+
+	<insert id="createReadRecords" parameterType="java.util.List">
+		INSERT INTO user_case_read_record
+			(
+				case_id, user_id, has_read
+			)
+		VALUES
+		 <foreach collection="list" item="item" index="index" separator="," >  
+        	(
+				#{item.caseId}, #{item.userId}, #{item.hasRead}
+			)
+   		 </foreach>  
+	</insert>
+	
+	<update id="updateHasReadByCaseId" parameterType="com.envision.envservice.entity.dto.UserCaseReadRecord">
+		UPDATE user_case_read_record SET has_read = #{hasRead}
+		WHERE case_id = #{caseId}
+	</update>
+	
+	<select id="queryUnreadRecord" parameterType="string" resultType="com.envision.envservice.entity.dto.UserCaseReadRecord">
+		SELECT * FROM user_case_read_record
+		WHERE user_id = #{userId}
+		AND has_read = '0'
+	</select>
+	
+	<update id="resetUnreadRecord" parameterType="string">
+		UPDATE user_case_read_record SET has_read = '1'
+		WHERE user_id = #{userId}
+	</update>
+</mapper>

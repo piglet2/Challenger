@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.EvaluationRateDao">
+
+	<resultMap id="EvaluationRate" type="com.envision.envservice.entity.dto.EvaluationRate" >
+		<id property="id" column="id" />
+		<result property="periodId" column="period_id" />
+		<result property="managerId" column="manager_id" />
+		<result property="rate" column="rate" />
+		<result property="cts" column="cts" />
+		
+	</resultMap>
+
+	<insert id="addEvaluationRate" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.EvaluationRate">
+		INSERT INTO evaluation_rate (
+				period_id, manager_id, rate
+			) VALUES (
+				#{periodId}, #{managerId}, #{rate}
+			)
+	</insert>
+	
+	<select id="queryByPeriodIdAndManagerId"   resultMap="EvaluationRate" >
+		SELECT * FROM evaluation_rate 
+		WHERE period_id=#{periodId} and manager_id = #{managerId} 
+	</select>
+	
+	<select id="queryByManagerIdAndPeriodIdLimitSix"   resultMap="EvaluationRate" >
+		SELECT * FROM evaluation_rate 
+		WHERE  manager_id = #{managerId} and period_id &gt;= #{periodId}
+		order by id desc LIMIT 1,6
+	</select>
+	
+	<select id="queryByManagerIdLimitSix"   resultMap="EvaluationRate" >
+		SELECT * FROM evaluation_rate 
+		WHERE  manager_id = #{managerId} 
+		 ORDER BY id desc limit 1,6
+	</select>
+	
+	<delete id="deleteByPeriodIdAndManagerId"   parameterType="int">
+		delete from evaluation_rate 
+		WHERE period_id=#{periodId} and manager_id = #{managerId} 
+	</delete>
+	
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.PraiseTotalDao">
+	<resultMap type="com.envision.envservice.entity.dto.PraiseTotal" id="PraiseTotal">
+		<id column="id" property="id"/>
+		<result column="user_id" property="userId"/>
+		<result column="period_id" property="periodId"/>
+		<result column="total" property="total"/>
+	</resultMap>
+
+	<select id="queryTotal" parameterType="com.envision.envservice.entity.dto.PraiseTotal" resultMap="PraiseTotal">
+		SELECT `id`,`user_id`,`period_id`,`total`
+		FROM `praise_total`
+		WHERE `period_id` = #{periodId}
+		And `user_id` = #{userId}
+	</select>
+	
+	<insert id="addTotal" parameterType="com.envision.envservice.entity.dto.PraiseTotal">
+		INSERT INTO `praise_total`(`user_id`, `period_id`, `total`)
+		VALUES(#{userId}, #{periodId}, #{total})
+	</insert>
+	
+	<update id="updateTotalIncrease" parameterType="com.envision.envservice.entity.dto.PraiseTotal">
+		UPDATE `praise_total` SET `total`=`total`+1
+		WHERE `period_id` = #{periodId}
+		And `user_id` = #{userId}
+	</update>
+	
+	<update id="updateTotalDecrease" parameterType="com.envision.envservice.entity.dto.PraiseTotal">
+		UPDATE `praise_total` SET `total`=`total`-1
+		WHERE `period_id` = #{periodId}
+		And `user_id` = #{userId}
+	</update>
+</mapper> 

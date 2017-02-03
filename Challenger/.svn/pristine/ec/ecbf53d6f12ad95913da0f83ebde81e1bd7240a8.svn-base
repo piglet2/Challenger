@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.RedMineMemberRolesDao">
+
+	<resultMap id="MemberRoles" type="com.envision.envservice.entity.redmine.MemberRoles" >
+		<result property="id" column="id" />
+		<result property="memberId" column="member_id" />
+		<result property="roleId" column="role_id" />
+		<result property="inheritedFrom" column="inherited_from" />
+	</resultMap>
+
+	<insert id="addMemberRoles">
+			INSERT INTO member_roles (member_id, role_id)
+			SELECT id, '9'
+			FROM members
+	</insert>
+	
+	<delete id="deleteMemberRoles" >
+			delete from member_roles
+	</delete>
+</mapper>

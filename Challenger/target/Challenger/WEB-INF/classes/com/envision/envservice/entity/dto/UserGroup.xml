@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserGroupDao">
+
+	<resultMap id="UserGroup" type="com.envision.envservice.entity.dto.UserGroup" >
+		<id property="id" column="id" />
+		<result property="groupCode" column="group_code" />
+		<result property="groupCodeTwo" column="group_code_two" />
+		<result property="depCode" column="dep_code" />
+		<result property="userId" column="user_id" />
+		<result property="desc" column="desc" />
+	</resultMap>
+	
+
+	<select id="queryByCode" resultMap="UserGroup" >
+		SELECT * 
+		FROM user_group 
+		WHERE group_code = #{code}
+			<if test="codeTwo != null">
+				and group_code_two = #{codeTwo}
+			</if>
+	</select>
+	
+	<select id="queryByCodeAndDep" resultMap="UserGroup" >
+		SELECT * 
+		FROM user_group 
+		WHERE group_code = #{code}
+			<if test="codeTwo != null">
+				and group_code_two = #{codeTwo}
+			</if>
+			
+			<if test="depCode != null">
+				and (dep_code = #{depCode} 
+						or dep_code = ''
+						or dep_code is null)
+			</if>
+	</select>
+	
+	<select id="queryByUserId" resultMap="UserGroup" >
+		SELECT * 
+		FROM user_group 
+		WHERE user_id = #{userId}
+	</select>
+
+</mapper>

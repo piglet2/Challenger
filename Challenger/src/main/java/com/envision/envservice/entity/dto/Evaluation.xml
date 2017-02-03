@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.EvaluationDao">
+
+	<resultMap id="Evaluation" type="com.envision.envservice.entity.dto.Evaluation" >
+		<id property="id" column="id" />
+		<result property="periodId" column="period_id" />
+		<result property="managerId" column="manager_id" />
+		<result property="userId" column="user_id" />
+		<result property="priseWill" column="prise_will" />
+		<result property="priseWisdom" column="prise_wisdom" />
+		<result property="priseLove" column="prise_love" />
+		<result property="prosWill" column="pros_will" />
+		<result property="prosWisdom" column="pros_wisdom" />
+		<result property="prosLove" column="pros_love" />
+		<result property="hasRead" column="has_read" />
+		<result property="feedback" column="feedback" />
+		<result property="feedbackTime" column="feedback_time" />
+		<result property="remark" column="remark" />
+		<result property="cts" column="cts" />
+		
+	</resultMap>
+
+	<insert id="addEvaluation" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.Evaluation">
+		INSERT INTO evaluation (
+				period_id, manager_id, user_id,prise_will,prise_wisdom,prise_love,pros_will,pros_wisdom,pros_love,remark
+			) VALUES (
+				#{periodId}, #{managerId}, #{userId},#{priseWill},#{priseWisdom},#{priseLove},#{prosWill},#{prosWisdom},#{prosLove},#{remark}
+			)
+	</insert>
+	
+	<insert id="addNullEvaluation" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.Evaluation">
+		INSERT INTO evaluation (
+				period_id, manager_id, user_id,prise_will,prise_wisdom,prise_love,remark
+			) VALUES (
+				#{periodId}, #{managerId}, #{userId},#{priseWill},#{priseWisdom},#{priseLove},#{remark}
+			)
+	</insert>
+	
+	<update id="addFeedback" parameterType="com.envision.envservice.entity.dto.Evaluation">
+		update evaluation set feedback=#{feedback},feedback_time=#{feedback_time}
+		where period_id=#{period_id} and user_id=#{user_id}
+	</update>
+
+	<select id="queryByPeriodIdAndManagerId"   resultMap="Evaluation" >
+		SELECT * FROM evaluation 
+		WHERE period_id=#{periodId}  and  manager_id=#{managerId} order by id
+	</select>   
+	
+	<select id="queryByPeriodIdAndManagerIdAndUserId"   resultMap="Evaluation" >
+		SELECT * FROM evaluation 
+		WHERE period_id=#{periodId}  and  manager_id=#{managerId} and user_id=#{userId} order by id
+	</select>   
+	
+	<select id="queryByPeriodIdAndUserId"   resultMap="Evaluation" >
+		SELECT * FROM evaluation 
+		WHERE period_id = #{periodId} and user_id=#{userId} order by id
+	</select>
+	
+	<select id="queryByUserId"   resultMap="Evaluation" >
+		SELECT * FROM evaluation 
+		WHERE user_id=#{userId} order by id
+	</select>
+	
+	<select id="queryByUserIdAndDep"   resultMap="Evaluation" >
+		select * from evaluation where user_id in(
+		select user_id from sap_user where department=
+		(select department from sap_user where user_id=#{userId}))
+	</select>
+	
+	<select id="queryManagerIdByPeriodId" resultMap="Evaluation" >
+		select DISTINCT manager_id from evaluation
+		WHERE period_id=#{periodId} order by id
+	</select>
+	
+	<select id="queryByPeriodId" resultMap="Evaluation" >
+		select * from evaluation
+		WHERE period_id=#{periodId} order by id
+	</select>
+	
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.NotEvaluationUserDao">
+
+	<resultMap id="NotEvaluationUser" type="com.envision.envservice.entity.dto.NotEvaluationUser" >
+		<result property="userId" column="user_id" />
+	</resultMap>
+
+	<select id="queryAll"   resultMap="NotEvaluationUser" >
+		select * from not_evaluation_user
+	</select>
+	
+	<insert id="replace" parameterType="java.util.List">
+		REPLACE INTO not_evaluation_user 
+			(
+				user_id
+			)
+		VALUES
+		<foreach collection="list" item="item" separator="," >
+			(
+				#{item.userId}
+			)
+		</foreach>
+	</insert>
+	
+</mapper>

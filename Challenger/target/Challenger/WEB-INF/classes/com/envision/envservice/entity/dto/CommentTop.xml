@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.CommentTopDao">
+
+	<resultMap id="CommentTip" type="com.envision.envservice.entity.dto.CommentTop" >
+		<id property="id" column="id" />
+		<result property="commentId" column="comment_id" />
+		<result property="type" column="type" />
+		<result property="count" column="count" />
+		<result property="time" column="time" />
+	</resultMap>
+	
+	<select id="queryByCommentIdAndType" parameterType= "com.envision.envservice.entity.dto.CommentTop" 
+						resultType="com.envision.envservice.entity.dto.CommentTop">
+		SELECT * FROM comment_top
+		WHERE comment_id = #{commentId}
+		AND type = #{type}
+	</select>
+	
+	<insert id="addCommentTop" parameterType= "com.envision.envservice.entity.dto.CommentTop">
+		insert into comment_top 
+		(
+		comment_id, type, count
+		)
+		values
+		(
+		#{commentId}, #{type}, #{count}
+		)
+	</insert>
+	
+	<update id="updateCount" parameterType= "com.envision.envservice.entity.dto.CommentTop">
+		UPDATE comment_top 
+		SET count = #{count}
+		WHERE id = #{id}
+	</update>
+</mapper> 

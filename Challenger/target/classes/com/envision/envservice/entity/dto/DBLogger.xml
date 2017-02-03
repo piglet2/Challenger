@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.DBLoggerDao">
+	
+	<resultMap type="com.envision.envservice.entity.dto.DBLogger" id="DBLogger">
+		<id column="id" property="id"/>
+		<result column="host" property="host"/>
+		<result column="user_id" property="userId"/>
+		<result column="events" property="events"/>
+		<result column="user_id_target" property="userIdTarget"/>
+		<result column="succeed" property="succeed"/>
+		<result column="remark" property="remark"/>
+		<result column="has_read" property="hasRead"/>
+		<result column="cts" property="cts"/>
+		<result column="earmark" property="earmark"/>
+		<result column="table_name" property="tableName"/>
+		<result column="table_id" property="tableId"/>
+	</resultMap>
+	
+	
+	<insert id="addLogger" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.DBLogger">
+		INSERT INTO `logger`
+			(
+				`host`, `user_id`, `events`, `user_id_target`, `succeed`, `remark`, `has_read`, `cts`, `earmark`, `table_name`, `table_id`
+			)
+		VALUES
+			(
+				#{host}, #{userId}, #{events}, #{userIdTarget}, #{succeed}, #{remark}, #{hasRead}, #{cts}, #{earmark}, #{tableName}, #{tableId}
+			)
+	</insert>
+	
+	<update id="updateLogger" parameterType="com.envision.envservice.entity.dto.DBLogger">
+		UPDATE `logger` 
+		<set>
+			<if test="succeed != null">
+				succeed = #{succeed},
+			</if>
+			<if test="tableId != null">
+				table_id = #{tableId},
+			</if>
+			<if test="hasRead != null">
+				has_read = #{hasRead},
+			</if>
+		</set>
+		WHERE `id` = #{id}
+	</update>
+	
+	<select id="queryUnread" resultMap="DBLogger">
+		SELECT *
+		FROM logger
+		WHERE `user_id_target` = #{userId}  and 
+			  `succeed` = '1' and 
+			  `has_read` = '0' and 
+			  `events` in
+					(
+						<foreach collection="events"  item="item" separator="," >  
+				  			#{item}  
+				  		</foreach>
+				  	)
+	</select>
+
+	<select id="queryPage" resultMap="DBLogger">
+		SELECT *
+		FROM 
+			(
+				SELECT *
+				FROM logger
+				WHERE `user_id_target` = #{userId}  and 
+					  `succeed` = '1' and 
+					  `events` in
+						  <foreach collection="events"  item="item" open="(" separator="," close=")">  
+						  		#{item}
+						  </foreach>
+				ORDER BY cts DESC
+			) logger
+		LIMIT #{offset}, #{rows}
+	</select>
+	
+	<update id="setRead" >
+		UPDATE `logger` 
+		SET `has_read` = #{hasRead}
+		WHERE `id` in
+			(
+				<foreach collection="ids"  item="item" separator="," >  
+		  			#{item}
+		  		</foreach>
+		  	)
+	</update>
+</mapper> 

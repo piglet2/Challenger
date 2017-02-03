@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.PushConfigDao">
+
+	<resultMap id="PushConfig" type="com.envision.envservice.entity.dto.PushConfig" >
+		<id property="id" column="id" />
+		<result property="username" column="username" />
+		<result property="deviceToken" column="device_token" />
+	</resultMap>
+	
+	<insert id="addPushConfig" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.PushConfig">
+			INSERT INTO push_config (
+			username,device_token
+		) VALUES (
+			#{username}, #{deviceToken}
+		)
+	</insert>
+	
+	<select id="queryByUsername" resultMap="PushConfig">
+			SELECT * FROM push_config  where username=#{username}
+	</select>
+	
+	<delete id="delByUsername">
+			delete from push_config where username=#{username}
+	</delete>
+	
+	<select id="queryByToken" resultMap="PushConfig">
+			SELECT * FROM push_config  where device_token=#{deviceToken}
+	</select>
+	
+	<delete id="delByToken">
+			delete from push_config where device_token=#{deviceToken}
+	</delete>
+	
+	<select id="queryAll" resultMap="PushConfig">
+			SELECT * FROM push_config  order by id
+	</select>
+	
+</mapper>

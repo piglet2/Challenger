@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCaseRemindsDao">
+
+	<resultMap id="UserCaseReminds" type="com.envision.envservice.entity.dto.UserCaseReminds" >
+		<id property="id" column="id" />
+		<result property="user_case_id" column="user_case_id" />
+		<result property="reminds" column="reminds" />
+	</resultMap>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.UserCaseReminds">
+		INSERT INTO user_case_reminds (
+			user_case_id,reminds
+		) VALUES (
+			#{user_case_id}, #{reminds}
+		)
+	</insert>
+
+ 	<select id="queryById"   resultMap="UserCaseReminds" > 
+		SELECT * 
+		FROM user_case_reminds 
+		WHERE user_case_id = #{user_case_id}
+	</select> 
+</mapper>

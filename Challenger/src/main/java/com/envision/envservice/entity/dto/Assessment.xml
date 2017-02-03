@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.AssessmentDao">
+
+	<resultMap id="Assessment" type="com.envision.envservice.entity.dto.Assessment" >
+		<id property="id" column="id" />
+		<result property="cycleId" column="cycle_id" />
+		<result property="criticId" column="critic_id" />
+		<result property="userId" column="user_id" />
+		<result property="priseWill" column="prise_will" />
+		<result property="priseWisdom" column="prise_wisdom" />
+		<result property="priseLove" column="prise_love" />
+		<result property="prosWill" column="pros_will" />
+		<result property="prosWisdom" column="pros_wisdom" />
+		<result property="prosLove" column="pros_love" />
+		<result property="hasRead" column="has_read" />
+		<result property="feedback" column="feedback" />
+		<result property="feedbackTime" column="feedback_time" />
+		<result property="cts" column="cts" />
+		
+	</resultMap>
+
+	<insert id="addAssessment" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.Assessment">
+		INSERT INTO assessment (
+				cycle_id, critic_id, user_id,prise_will,prise_wisdom,prise_love,pros_will,pros_wisdom,pros_love
+			) VALUES (
+				#{cycleId}, #{criticId}, #{userId},#{priseWill},#{priseWisdom},#{priseLove},#{prosWill},#{prosWisdom},#{prosLove}
+			)
+	</insert>
+	
+	<update id="addFeedback" parameterType="com.envision.envservice.entity.dto.Assessment">
+		update assessment set feedback=#{feedback},feedback_time=#{feedback_time}
+		where cycle_id=#{cycleId} and critic_id=#{criticId}
+	</update>
+
+	<select id="queryByCycleIdAndCriticId"   resultMap="Assessment" >
+		SELECT * FROM assessment 
+		WHERE cycle_id=#{cycleId}  and  critic_id=#{criticId} order by id
+	</select>   
+	
+	<select id="queryByCycleIdAndUserId"   resultMap="Assessment" >
+		SELECT * FROM assessment 
+		WHERE cycle_id = #{cycleId} and user_id=#{userId} order by id
+	</select>
+	
+	<select id="queryByUserId"   resultMap="Assessment" >
+		SELECT * FROM assessment 
+		WHERE user_id=#{userId} order by id
+	</select>
+	
+	<select id="queryByUserIdAndDep"   resultMap="Assessment" >
+		select * from assessment where user_id in(
+		select user_id from sap_user where department=
+		(select department from sap_user where user_id=#{userId}))
+	</select>
+	
+	<select id="queryByCriticId" resultMap="Assessment" >
+		select DISTINCT user_id from assessment where critic_id=#{criticId} ORDER by cts desc
+	</select>
+	
+	<select id="queryByCycleId"   resultMap="Assessment" >
+		SELECT * FROM assessment 
+		WHERE cycle_id=#{cycleId} order by id
+	</select>
+	
+	<select id="queryByCycleIdAndUserIdAndCriticId"   resultMap="Assessment" >
+		SELECT * FROM assessment 
+		WHERE cycle_id=#{cycleId} and user_id=#{userId} and critic_id=#{criticId} order by id
+	</select>
+	
+</mapper>

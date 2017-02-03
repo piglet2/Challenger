@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.CourseRecordDao">
+
+	<resultMap id="CourseRecord" type="com.envision.envservice.entity.dto.CourseRecord" >
+		<id property="id" column="id" />
+		<result property="courseId" column="course_id" />
+		<result property="userId" column="user_id" />
+		<result property="feedbackStars" column="feedback_stars" />
+		<result property="feedbackMessage" column="feedback_message" />
+		<result property="arrangeTime" column="arrange_time" />
+		<result property="feedbackTime" column="feedback_time" />
+	</resultMap>
+
+
+	<insert id="create" parameterType="com.envision.envservice.entity.dto.CourseRecord">
+		INSERT INTO course_record
+			(
+				course_id, user_id, feedback_stars, feedback_message, arrange_time, feedback_time
+			)
+		VALUES
+			(
+				#{courseId}, #{userId}, #{feedbackStars}, #{feedbackMessage}, #{arrangeTime}, #{feedbackTime}
+			)
+	</insert>
+	
+	<update id="update" parameterType="com.envision.envservice.entity.dto.CourseRecord">
+		UPDATE course_record
+		<set>
+			<if test="feedbackStars != null">
+				feedback_stars = #{feedbackStars},
+			</if>
+			<if test="feedbackMessage != null">
+				feedback_message = #{feedbackMessage},
+			</if>
+			<if test="arrangeTime != null">
+				arrange_time = #{arrangeTime},
+			</if>
+			<if test="feedbackTime != null">
+				feedback_time = #{feedbackTime}
+			</if>
+		</set>
+		WHERE id= #{id}
+	</update>
+	
+	<select id="queryByCourseIdAndUserId" resultMap="CourseRecord">
+		SELECT * 
+		FROM course_record 
+		WHERE user_id = #{userId} and course_id = #{courseId}
+	</select>
+</mapper> 

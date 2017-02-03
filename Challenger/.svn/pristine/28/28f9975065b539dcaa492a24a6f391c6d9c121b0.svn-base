@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.RedMineUserDao">
+
+	<resultMap id="users" type="com.envision.envservice.entity.redmine.Users" >
+		<result property="id" column="id" />
+		<result property="login" column="login" />
+		<result property="hashed_password" column="hashed_password" />
+		<result property="firstname" column="firstname" />
+		<result property="lastname" column="lastname" />
+		<result property="mail" column="mail" />
+		<result property="admin" column="admin" />
+		<result property="status" column="status" />
+		<result property="last_login_on" column="last_login_on" />
+		<result property="language" column="language" />
+		<result property="auth_source_id" column="auth_source_id" />
+		<result property="created_on" column="created_on" />
+		<result property="updated_on" column="updated_on" />
+		<result property="type" column="type" />
+		<result property="identity_url" column="identity_url" />
+		<result property="mail_notification" column="mail_notification" />
+		<result property="salt" column="salt" />
+		<result property="must_change_passwd" column="must_change_passwd" />
+		<result property="division" column="division" />
+		<result property="department" column="department" />
+	</resultMap>
+
+	<insert id="replace">
+		REPLACE INTO users
+		(
+				id,login,firstname,lastname,mail,auth_source_id,created_on,language,type,status,identity_url,division,department
+		)
+		VALUES
+		(
+				#{id},#{login},#{firstname},#{lastname},#{mail},
+			#{auth_source_id},#{created_on},#{language},#{type},#{status},#{identity_url},#{division},#{department}
+			)
+	</insert>
+	
+	<select id="queryAll" resultMap="users" >
+		select * from sap_user where email is not NULL and custom06='正式员工' or custom06='Contractor'
+	</select>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCasePriseDao">
+
+	<resultMap id="UserCasePrise" type="com.envision.envservice.entity.dto.UserCasePrise" >
+		<id property="id" column="id" />
+		<result property="caseId" column="case_id" />
+		<result property="userId" column="user_id" />
+		<result property="priseWill" column="prise_will" />
+		<result property="priseWisdom" column="prise_wisdom" />
+		<result property="priseLove" column="prise_love" />
+		<result property="time" column="time" />
+	</resultMap>
+	
+
+	<select id="queryByCaseId" resultMap="UserCasePrise" >
+		SELECT * 
+		FROM user_case_prise 
+		WHERE case_id = #{caseId}
+	</select>
+
+	<select id="queryByUserId" resultMap="UserCasePrise" >
+		SELECT *
+		FROM user_case_prise
+		WHERE case_id IN
+			(
+				SELECT id 
+				FROM user_case
+				WHERE members LIKE concat('%', #{userId}, '%')
+			)
+	</select>
+	
+	<select id="queryByCaseIdAndUser" resultMap="UserCasePrise">
+		SELECT * 
+		FROM user_case_prise 
+		WHERE case_id = #{caseId} AND user_id = #{userId}
+	</select>
+	
+	<insert id="createPrise" parameterType="com.envision.envservice.entity.dto.UserCasePrise">
+		INSERT INTO user_case_prise
+			(
+				case_id, user_id, prise_will, prise_wisdom, prise_love, time
+			)
+		VALUES
+			(
+				#{caseId}, #{userId}, #{priseWill}, #{priseWisdom}, #{priseLove}, #{time}
+			)
+	</insert>
+	
+	<update id="updateCasePrise" parameterType="com.envision.envservice.entity.dto.UserCasePrise">
+		UPDATE user_case_prise
+		<set>
+			<if test="priseWill != null">
+				prise_will = #{priseWill},
+			</if>
+			<if test="priseWisdom != null">
+				prise_wisdom = #{priseWisdom},
+			</if>
+			<if test="priseLove != null">
+				prise_love = #{priseLove},
+			</if>
+			<if test="time != null">
+				time = #{time},
+			</if>
+		</set>
+		WHERE id= #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.SAPEmpJobDao">
+
+	<resultMap id="sapEmpJob" type="com.envision.envservice.entity.sap.SAPEmpJob" >
+		<result property="userId" column="user_id" />
+		<result property="attachmentFileName" column="attachment_file_name" />
+		<result property="attachmentFileSize" column="attachment_file_size" />
+		<result property="attachmentFileType" column="attachment_file_type" />
+		<result property="attachmentId" column="attachment_id" />
+		<result property="attachmentMimeType" column="attachment_mime_type" />
+		<result property="attachmentStatus" column="attachment_status" />
+		<result property="company" column="company" />
+		<result property="contractType" column="contract_type" />
+		<result property="costCenter" column="cost_center" />
+		<result property="countryOfCompany" column="country_of_company" />
+		<result property="createdBy" column="created_by" />
+		<result property="createdDateTime" column="created_date_time" />
+		<result property="createdOn" column="created_on" />
+		<result property="customDate1" column="custom_date1" />
+		<result property="customDate2" column="custom_date2" />
+		<result property="customDate3" column="custom_date3" />
+		<result property="customLong1" column="custom_long1" />
+		<result property="customLong2" column="custom_long2" />
+		<result property="customString2" column="custom_String2" />
+		<result property="customString3" column="custom_string3" />
+		<result property="customString4" column="custom_string4" />
+		<result property="customString6" column="custom_string6" />
+		<result property="customString7" column="custom_string7" />
+		<result property="customString8" column="custom_string8" />
+		<result property="customString15" column="custom_string15" />
+		<result property="department" column="department" />
+		<result property="division" column="division" />
+		<result property="emplStatus" column="empl_status" />
+		<result property="employeeClass" column="employee_class" />
+		<result property="endDate" column="end_date" />
+		<result property="event" column="event" />
+		<result property="eventReason" column="event_reason" />
+		<result property="expectedReturnDate" column="expected_return_date" />
+		<result property="fte" column="fte" />
+		<result property="holidayCalendarCode" column="holiday_calendar_code" />
+		<result property="isCompetitionClause" column="is_competition_clause" />
+		<result property="lastModifiedBy" column="last_modified_by" />
+		<result property="lastModifiedDateTime" column="last_modified_date_time" />
+		<result property="lastModifiedOn" column="last_modified_on" />
+		<result property="location" column="location" />
+		<result property="managerId" column="manager_id" />
+		<result property="notes" column="notes" />
+		<result property="operation" column="operation" />
+		<result property="position" column="position" />
+		<result property="probationPeriodEndD" column="probation_period_end_d" />
+		<result property="timeTypeProfileCode" column="time_type_profile_code" />
+		<result property="timezone" column="timezone" />
+		<result property="workscheduleCode" column="workschedule_code" />
+		<result property="uts" column="uts" />
+	</resultMap>
+	
+	<select id="queryAll" parameterType="String" resultMap="sapEmpJob">
+		SELECT e.*
+		FROM sap_user u, sap_empjob e
+		WHERE u.user_id = e.user_id AND e.empl_status = '581' and e.manager_id is not null
+	</select>
+
+	<select id="queryById" parameterType="String" resultMap="sapEmpJob">
+		SELECT * 
+		FROM sap_empjob 
+		WHERE empl_status = '581' AND user_id = #{userId}
+	</select>
+
+	<select id="queryByManagerId" parameterType="String" resultMap="sapEmpJob">
+		SELECT * FROM sap_empjob where user_id in( 
+			select user_id from sap_user where user_id in (
+				select user_id from sap_empjob where manager_id=#{managerId} and empl_status='581')
+			and custom06='正式员工')
+	</select>
+	
+	<select id="queryManager" parameterType="String" resultMap="sapEmpJob">
+			SELECT * FROM sap_empjob WHERE empl_status = '581' 
+			AND user_id IN (
+				SELECT DISTINCT e.manager_id FROM sap_empjob e,sap_user u 
+				WHERE e.empl_status = '581' 
+							and e.user_id=u.user_id 
+							and u.custom06='正式员工' 
+							and e.user_id not in (select user_id from not_evaluation_user)
+				) ORDER BY user_id desc 
+	</select>
+	
+	<select id="queryMatch" parameterType="com.envision.envservice.entity.sap.SAPEmpJob" resultMap="sapEmpJob">
+		SELECT * 
+		FROM sap_empjob 
+		WHERE empl_status = '581'
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="managerId != null">
+				and manager_id = #{managerId}
+			</if>
+			<if test="department != null">
+				and department = #{department}
+			</if>
+	</select>
+
+	<insert id="replace" parameterType="java.util.List">
+		REPLACE INTO sap_empjob 
+			(
+				user_id, attachment_file_name, attachment_file_size, attachment_file_type, 
+				attachment_id, attachment_mime_type, attachment_status,company, 
+				contract_type, cost_center, country_of_company, created_by, 
+				created_date_time, created_on, custom_date1, custom_date2, 
+				custom_date3, custom_long1, custom_long2, custom_String2, 
+				custom_string3, custom_string4, custom_string6, custom_string7, 
+				custom_string8, custom_string15, department, division, empl_status,
+				employee_class, end_date, event, event_reason, 
+				expected_return_date, fte, holiday_calendar_code, is_competition_clause, 
+				last_modified_by, last_modified_date_time, last_modified_on, location, 
+				manager_id, notes, operation, position,
+				probation_period_end_d, time_type_profile_code, timezone, workschedule_code,
+				uts
+			)
+		VALUES
+		<foreach collection="list" item="item" separator="," >
+			(
+				#{item.userId}, #{item.attachmentFileName}, #{item.attachmentFileSize}, #{item.attachmentFileType},
+				#{item.attachmentId}, #{item.attachmentMimeType}, #{item.attachmentStatus},#{item.company}, 
+				#{item.contractType}, #{item.costCenter}, #{item.countryOfCompany},#{item.createdBy}, 
+				#{item.createdDateTime}, #{item.createdOn}, #{item.customDate1}, #{item.customDate2}, 
+				#{item.customDate3}, #{item.customLong1}, #{item.customLong2}, #{item.customString2}, 
+				#{item.customString3}, #{item.customString4},#{item.customString6}, #{item.customString7},
+				#{item.customString8}, #{item.customString15}, #{item.department}, #{item.division}, #{item.emplStatus}, 
+				#{item.employeeClass}, #{item.endDate}, #{item.event}, #{item.eventReason}, 
+				#{item.expectedReturnDate}, #{item.fte}, #{item.holidayCalendarCode}, #{item.isCompetitionClause},
+				#{item.lastModifiedBy}, #{item.lastModifiedDateTime}, #{item.lastModifiedOn}, #{item.location},
+				#{item.managerId}, #{item.notes}, #{item.operation}, #{item.position}, 
+				#{item.probationPeriodEndD}, #{item.timeTypeProfileCode}, #{item.timezone}, #{item.workscheduleCode},
+				#{item.uts}
+			)
+		</foreach>
+	</insert>
+</mapper>

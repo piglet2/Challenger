@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.SAPUserDao">
+
+	<resultMap id="sapUser" type="com.envision.envservice.entity.sap.SAPUser" >
+		<result property="userId" column="user_id" />
+		<result property="addressLine1" column="address_line1" />
+		<result property="addressLine2" column="address_line2" />
+		<result property="businessPhone" column="business_phone" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="criticalTalentCommes" column="critical_talent_commes" />
+		<result property="custom01" column="custom01" />
+		<result property="custom02" column="custom02" />
+		<result property="custom03" column="custom03" />
+		<result property="custom04" column="custom04" />
+		<result property="custom05" column="custom05" />
+		<result property="custom06" column="custom06" />
+		<result property="custom07" column="custom07" />
+		<result property="custom08" column="custom08" />
+		<result property="custom09" column="custom09" />
+		<result property="custom10" column="custom10" />
+		<result property="custom11" column="custom11" />
+		<result property="custom12" column="custom12" />
+		<result property="custom13" column="custom13" />
+		<result property="custom14" column="custom14" />
+		<result property="custom15" column="custom15" />
+		<result property="dateOfBirth" column="date_of_birth" />
+		<result property="defaultLocale" column="default_locale" />
+		<result property="department" column="department" />
+		<result property="division" column="division" />
+		<result property="email" column="email" />
+		<result property="empId" column="empId" />
+		<result property="employeeClass" column="employee_class" />
+		<result property="firstName" column="first_name" />
+		<result property="gender" column="gender" />
+		<result property="hireDate" column="hire_date" />
+		<result property="impactOfLossComments" column="impact_of_loss_comments" />
+		<result property="issueComments" column="issue_comments" />
+		<result property="jobCode" column="job_code" />
+		<result property="lastModified" column="last_modified" />
+		<result property="lastModifiedDateTime" column="last_modified_date_time" />
+		<result property="lastModifiedWithTZ" column="last_modified_with_TZ" />
+		<result property="lastName" column="last_name" />
+		<result property="lastReviewDate" column="last_review_date" />
+		<result property="location" column="location" />
+		<result property="origHireDate" column="orig_hire_date" />
+		<result property="password" column="password" />
+		<result property="reasonForLeaving" column="reason_for_leaving" />
+		<result property="reloComments" column="relo_comments" />
+		<result property="reloLocation" column="relo_location" />
+		<result property="reloWilling" column="relo_willing" />
+		<result property="reviewFreq" column="review_freq" />
+		<result property="seatingChart" column="seating_chart" />
+		<result property="state" column="state" />
+		<result property="status" column="status" />
+		<result property="sysCostOfSource" column="sys_cost_of_source" />
+		<result property="sysSource" column="sys_source" />
+		<result property="sysStartingSalary" column="sys_starting_salary" />
+		<result property="timeZone" column="time_zone" />
+		<result property="title" column="title" />
+		<result property="totalTeamSize" column="total_team_size" />
+		<result property="username" column="username" />
+		<result property="uts" column="uts" />
+	</resultMap>
+	
+	<select id="queryByRedmine" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE u.user_id = e.user_id AND e.empl_status = '581'
+		AND u.email is NOT NULL 
+		AND (u.custom06='正式员工' or u.custom06='Contractor')
+	</select>
+
+	<select id="queryAll" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE u.user_id = e.user_id AND e.empl_status = '581'
+	</select>
+	
+	<select id="queryAllByStatus" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE u.user_id = e.user_id AND e.empl_status != '581'
+		AND u.email is NOT NULL 
+		AND (u.custom06='正式员工' or u.custom06='Contractor')
+	</select>
+
+	<select id="queryByIds" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE
+			(u.user_id = e.user_id AND e.empl_status = '581') 
+			AND
+			(	
+				u.user_id IN
+				(
+					<foreach collection="array" item="item" separator="," >
+						#{item}
+					</foreach>
+				)
+			)
+	</select>
+
+	<select id="queryAllByIds" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u
+		WHERE
+			u.user_id IN
+			(
+				<foreach collection="array" item="item" separator="," >
+					#{item}
+				</foreach>
+			)
+	</select>
+	
+	<select id="queryByUserId" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u
+		WHERE 
+		u.user_id=#{userId}
+	</select>
+
+	<select id="queryByUsernames" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE
+			(u.user_id = e.user_id AND e.empl_status = '581') 
+			AND  
+			(
+				u.username IN
+				(
+					<foreach collection="array" item="item" separator="," >
+						#{item}
+					</foreach>
+				)
+			)
+	</select>
+	
+	<select id="queryByUsername" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE
+			(u.user_id = e.user_id AND e.empl_status = '581') 
+			AND  
+			(
+				u.username =#{username}
+			)
+	</select>
+
+	<select id="queryAllByUsernames" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE
+			u.username IN
+			(
+				<foreach collection="array" item="item" separator="," >
+					#{item}
+				</foreach>
+			)
+	</select>
+	
+	<select id="queryAllUsers" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u
+	</select>
+	
+	<select id="queryByUsernamesOrLastNames" parameterType="java.lang.String" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE (u.user_id = e.user_id AND e.empl_status = '581') AND (u.`username` LIKE concat('%', #{_parameter}, '%')  OR u.`last_name` LIKE concat('%', #{_parameter}, '%'))
+	</select>
+
+	<insert id="replace" parameterType="java.util.List">
+		REPLACE INTO sap_user 
+			(
+				user_id, address_line1, address_line2, business_phone, city, 
+				country,critical_talent_commes, custom01, custom02, custom03, 
+				custom04, custom05, custom06, custom07, custom08, 
+				custom09, custom10, custom11, custom12, custom13, 
+				custom14, custom15, date_of_birth, default_locale, department, 
+				division, email, empId, employee_class, first_name,
+				gender, hire_date, impact_of_loss_comments, issue_comments, job_code, 
+				last_modified, last_modified_date_time, last_modified_with_TZ, last_name, last_review_date, 
+				location, orig_hire_date, password, reason_for_leaving, relo_comments, 
+				relo_location, relo_willing, review_freq, seating_chart, state, 
+				status, sys_cost_of_source, sys_source, sys_starting_salary, time_zone, 
+				title, total_team_size, username, uts
+			)
+		VALUES
+		<foreach collection="list" item="item" separator="," >
+			(
+				#{item.userId}, #{item.addressLine1}, #{item.addressLine2}, #{item.businessPhone}, #{item.city},
+				#{item.country}, #{item.criticalTalentCommes}, #{item.custom01}, #{item.custom02}, #{item.custom03},
+				#{item.custom04}, #{item.custom05}, #{item.custom06}, #{item.custom07}, #{item.custom08},
+				#{item.custom09}, #{item.custom10}, #{item.custom11}, #{item.custom12}, #{item.custom13},
+				#{item.custom14}, #{item.custom15}, #{item.dateOfBirth}, #{item.defaultLocale}, #{item.department},
+				#{item.division}, #{item.email}, #{item.empId}, #{item.employeeClass}, #{item.firstName},
+				#{item.gender}, #{item.hireDate}, #{item.impactOfLossComments}, #{item.issueComments}, #{item.jobCode},
+				#{item.lastModified}, #{item.lastModifiedDateTime}, #{item.lastModifiedWithTZ}, #{item.lastName}, #{item.lastReviewDate},
+				#{item.location}, #{item.origHireDate}, #{item.password}, #{item.reasonForLeaving}, #{item.reloComments},
+				#{item.reloLocation}, #{item.reloWilling}, #{item.reviewFreq}, #{item.seatingChart}, #{item.state},
+				#{item.status}, #{item.sysCostOfSource}, #{item.sysSource}, #{item.sysStartingSalary}, #{item.timeZone},
+				#{item.title}, #{item.totalTeamSize}, #{item.username}, #{item.uts}
+			)
+		</foreach>
+	</insert>
+	
+	<select id="queryByCustom06" resultMap="sapUser" >
+		SELECT u.*
+		FROM sap_user u, sap_empjob e
+		WHERE u.user_id = e.user_id AND e.empl_status = '581'
+		AND u.custom06='正式员工' order by user_id
+	</select>
+	
+	
+</mapper>

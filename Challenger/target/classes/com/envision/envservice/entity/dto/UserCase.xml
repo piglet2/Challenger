@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCaseDao">
+
+	<resultMap id="UserCase" type="com.envision.envservice.entity.dto.UserCase" >
+		<id property="id" column="id" />
+		<result property="members" column="members" />
+		<result property="message" column="message" />
+		<result property="top" column="top" />
+		<result property="hasRead" column="has_read" />
+		<result property="newPrise" column="new_prise" />
+		<result property="defaultCase" column="default_case" />
+		<result property="anonymous" column="anonymous" />
+		<result property="cts" column="cts" />
+		<result property="hasOpen" column="has_open" />
+	</resultMap>
+	
+	<select id="queryPlaza" resultMap="UserCase" >
+		SELECT DISTINCT u.* FROM user_case u,user_case_reminds r
+		WHERE
+			u.cts &lt;  
+			(
+				SELECT cts  FROM user_case WHERE id = #{sinceId}
+			)
+			AND 
+			(
+				u.top IS NULL and u.default_case IS NULL
+			)
+			AND
+			(
+					u.has_open='0'
+					OR
+					(
+						u.has_open='1' and u.members LIKE concat('%', #{userId}, '%')
+					)
+					OR
+					(
+						u.has_open='1' and r.reminds = #{userId} and u.id=r.user_case_id
+					)
+					OR
+					(
+						u.creator=#{userId}
+					)
+			)
+		ORDER BY u.cts DESC
+		LIMIT 0, #{rows}
+	</select>
+	
+	<select id="queryPlazaByDivision" resultMap="UserCase" >
+		SELECT DISTINCT u.* FROM user_case u,user_case_reminds r
+		WHERE
+			u.cts &lt;  
+			(
+				SELECT cts  FROM user_case WHERE id = #{sinceId}
+			)
+			AND 
+			(
+				u.top IS NULL and u.default_case IS NULL
+			)
+<!-- 			按体系分类      -->
+<!-- 			AND  -->
+<!-- 			( -->
+<!-- 				u.creator in (select user_id from sap_user where division= -->
+<!-- 				(select division from sap_user where user_id=#{userId})) -->
+<!-- 			)	 -->
+			AND
+			(
+					u.has_open='0'
+					OR
+					(
+						u.has_open='1' and u.members LIKE concat('%', #{userId}, '%')
+					)
+					OR
+					(
+						u.has_open='1' and r.reminds = #{userId} and u.id=r.user_case_id
+					)
+					OR
+					(
+						u.creator=#{userId}
+					)
+			)
+		ORDER BY u.cts DESC
+		LIMIT 0, #{rows}
+	</select>
+	
+	<select id="queryPlazaIndexByDivision" resultMap="UserCase" >
+		SELECT DISTINCT u.* FROM user_case u,user_case_reminds r
+		WHERE
+			(
+				u.top IS NULL and u.default_case IS NULL
+			)
+<!-- 			按体系分类      -->
+<!-- 			AND  -->
+<!-- 			( -->
+<!-- 				u.creator in (select user_id from sap_user where division= -->
+<!-- 				(select division from sap_user where user_id=#{userId})) -->
+<!-- 			)	 -->
+			AND
+			(
+					u.has_open='0'
+					OR
+					(
+						u.has_open='1' and u.members LIKE concat('%', #{userId}, '%')
+					)
+					OR
+					(
+						u.has_open='1' and r.reminds = #{userId} and u.id=r.user_case_id
+					)
+					OR
+					(
+						u.creator=#{userId}
+					)
+			)
+		ORDER BY u.cts DESC
+		LIMIT 0, #{rows}
+	</select>
+	
+	<select id="queryPlazaIndex" resultMap="UserCase" >
+		SELECT DISTINCT u.* FROM user_case u,user_case_reminds r
+		WHERE
+			(
+				u.top IS NULL and u.default_case IS NULL
+			)
+			AND
+			(
+					u.has_open='0'
+					OR
+					(
+						u.has_open='1' and u.members LIKE concat('%', #{userId}, '%')
+					)
+					OR
+					(
+						u.has_open='1' and r.reminds = #{userId} and u.id=r.user_case_id
+					)
+					OR
+					(
+						u.creator=#{userId}
+					)
+			)
+		ORDER BY u.cts DESC
+		LIMIT 0, #{rows}
+	</select>
+
+	<select id="queryPlazaTop" resultMap="UserCase" >
+		SELECT *
+		FROM user_case
+		WHERE top IS NOT NULL
+		ORDER BY top
+	</select>
+
+	<select id="queryById" resultMap="UserCase" >
+		SELECT * 
+		FROM user_case 
+		WHERE id = #{id}
+	</select>
+
+	<select id="queryDefaultCaseById" resultMap="UserCase" >
+		SELECT * 
+		FROM user_case 
+		WHERE members = #{userId} and default_case = '1'
+	</select>
+
+	<select id="queryByUser" resultMap="UserCase" >
+		SELECT DISTINCT u.* FROM user_case u,user_case_reminds r
+		WHERE members LIKE concat('%', #{userId}, '%')
+		AND
+			(
+					u.has_open='0'
+					OR
+					(
+						u.has_open='1' and u.members LIKE concat('%', #{checkUserId}, '%')
+					)
+					OR
+					(
+						u.has_open='1' and r.reminds = #{checkUserId} and u.id=r.user_case_id
+					)
+					OR
+					(
+						u.creator=#{checkUserId}
+					)
+			)
+		ORDER BY default_case DESC, cts DESC
+	</select>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.UserCase">
+		INSERT INTO user_case (
+			members, message, has_read, new_prise, default_case, creator, anonymous, cts,has_open
+		) VALUES (
+			#{members}, #{message}, #{hasRead}, #{newPrise}, #{defaultCase}, #{creator}, #{anonymous}, #{cts},#{hasOpen}
+		)
+	</insert>
+
+	<update id="reset" >
+		UPDATE user_case 
+		SET has_read = 1, new_prise = 0
+		WHERE `id` in
+			(
+				<foreach collection="ids"  item="item" separator="," >  
+		  			#{item}
+		  		</foreach>
+		  	)
+	</update>
+
+	<update id="incrementNewPrise">
+		UPDATE user_case
+		SET new_prise = new_prise + 1
+		WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.ClgApplicationDao">
+
+	<resultMap id="ClgApplication" type="com.envision.envservice.entity.dto.ClgApplication" >
+		<id property="id" column="id" />
+		<result property="icon" column="icon" />
+		<result property="iconColor" column="icon_color" />
+		<result property="name" column="name" />
+		<result property="url" column="url" />
+		<result property="sort" column="sort" />
+		<result property="show" column="show" />
+		<result property="cts" column="cts" />
+		
+	</resultMap>
+
+	<select id="queryAll"   resultMap="ClgApplication" >
+		SELECT * FROM clg_application 
+		order by sort desc
+	</select>
+	
+</mapper>

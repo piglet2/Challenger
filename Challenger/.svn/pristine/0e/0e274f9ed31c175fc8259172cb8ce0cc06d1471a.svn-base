@@ -1,0 +1,9 @@
+challenger.jdbc.driverClassName=com.mysql.jdbc.Driver
+challenger.jdbc.databaseURL=${env.jdbc.databaseURL}
+challenger.jdbc.username=${env.jdbc.username}
+challenger.jdbc.password=${env.jdbc.password}
+
+redmine.jdbc.driverClassName=com.mysql.jdbc.Driver
+redmine.jdbc.databaseURL=jdbc:mysql://172.16.34.19:3306/redtest4?useUnicode=true&characterEncoding=utf-8
+redmine.jdbc.username=redtest4
+redmine.jdbc.password=redtest4

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.AwardDao">
+
+	<resultMap id="Award" type="com.envision.envservice.entity.dto.Award" >
+		<id property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="comment" column="comment" />
+		<result property="type" column="type" />
+		<result property="scope" column="scope" />
+		<result property="issuedate" column="issuedate" />
+		<result property="cts" column="cts" />
+	</resultMap>
+
+	<insert id="addAward" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.Award">
+		INSERT INTO award (
+				user_id,comment,type,scope,issuedate
+			) VALUES (
+				#{userId},#{comment},#{type},#{scope},#{issuedate}
+			)
+	</insert>
+	
+	<select id="queryByUserId"   resultMap="Award" >
+		SELECT * FROM award WHERE user_id=#{userId} 
+	</select>   
+	
+	<delete id="deleteByUserId"   parameterType="int">
+		delete from award WHERE user_id=#{userId} 
+	</delete>
+	
+</mapper>

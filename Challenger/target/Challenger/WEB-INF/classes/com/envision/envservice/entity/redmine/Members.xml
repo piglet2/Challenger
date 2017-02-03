@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.RedMineMembersDao">
+
+	<resultMap id="Members" type="com.envision.envservice.entity.redmine.Members" >
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="projectId" column="project_id" />
+		<result property="createdOn" column="created_on" />
+		<result property="mailNotification" column="mail_notification" />
+	</resultMap>
+
+	<insert id="addMembers">
+			INSERT INTO members (user_id, project_id, created_on)
+			SELECT id, '101', NOW()
+			FROM users
+	</insert>
+	
+	<delete id="deleteMembers" >
+			delete from members
+	</delete>
+	
+	<select id="queryMembers" resultMap="Members" >
+		SELECT *
+		FROM members
+	</select>
+</mapper>

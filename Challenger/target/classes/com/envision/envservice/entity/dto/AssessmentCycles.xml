@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.AssessmentCyclesDao">
+
+	<resultMap id="AssessmentCycles" type="com.envision.envservice.entity.dto.AssessmentCycles" >
+		<id property="id" column="id" />
+		<result property="cycleId" column="cycle_id" />
+		<result property="cyclesDateFrom" column="cycles_date_from" />
+		<result property="cyclesDateTo" column="cycles_date_to" />
+		<result property="des" column="des" />
+		<result property="cts" column="cts" />
+	</resultMap>
+	
+	<insert id="addAssessmentCycles" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.AssessmentCycles">
+			INSERT INTO assessment_cycles (
+			cycle_id, cycles_date_from, cycles_date_to, des
+		) VALUES (
+			#{cycleId}, #{cyclesDateFrom}, #{cyclesDateTo}, #{des}
+		)
+	</insert>
+	
+	<select id="queryAll" resultMap="AssessmentCycles">
+			SELECT * FROM assessment_cycles  ORDER BY cycle_id desc
+	</select>
+	
+	<select id="queryLastAssessmentCycles" resultMap="AssessmentCycles">
+			SELECT * FROM assessment_cycles  ORDER BY cycle_id DESC LIMIT 1 
+	</select>
+	
+	<select id="queryBycts" resultMap="AssessmentCycles">
+			select * from assessment_cycles ORDER BY cts desc
+	</select>
+	
+	<select id="queryLast" resultMap="AssessmentCycles" >
+			select * from assessment_cycles 
+       		where id  &lt; 
+       		(select id from assessment_cycles where cycle_id = #{cycleId})
+			ORDER BY id desc LIMIT 1
+	</select>
+	
+	<select id="queryNext" resultMap="AssessmentCycles" >
+			select * from assessment_cycles 
+       		where id  &gt;
+       		(select id from assessment_cycles where cycle_id = #{cycleId})
+			ORDER BY id LIMIT 1
+	</select>
+	
+	<select id="queryByCycleId" resultMap="AssessmentCycles" >
+			select * from assessment_cycles 
+       		where cycle_id=#{cycleId}
+	</select>
+	
+	<select id="queryFirst" resultMap="AssessmentCycles" >
+			select * from assessment_cycles order by id
+	</select>
+	
+	<select id="queryLastOne" resultMap="AssessmentCycles" >
+		select * from assessment_cycles order by id desc
+	</select>
+</mapper>

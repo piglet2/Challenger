@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.ClgPictureDao">
+
+	<resultMap id="ClgPicture" type="com.envision.envservice.entity.dto.ClgPicture" >
+		<id property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="type_id" column="type_id" />
+		<result property="pic" column="pic" />
+		<result property="ord" column="ord" />
+		<result property="cts" column="cts" />
+	</resultMap>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.ClgPicture">
+		INSERT INTO clg_picture (
+			type, type_id, pic, ord
+		) VALUES (
+			#{type}, #{type_id}, #{pic}, #{ord}
+		)
+	</insert>
+
+	<select id="queryByTypeAndTypeId"   resultMap="ClgPicture" >
+		SELECT * 
+		FROM clg_picture 
+		WHERE type = #{type} and type_id = #{type_id}
+	</select>
+</mapper>

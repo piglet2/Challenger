@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCaseCommentDao">
+
+	<resultMap id="UserCaseComment" type="com.envision.envservice.entity.dto.UserCaseComment" >
+		<id property="id" column="id" />
+		<result property="caseId" column="case_id" />
+		<result property="userId" column="user_id" />
+		<result property="comment" column="comment" />
+		<result property="anonymous" column="anonymous" />
+		<result property="time" column="time" />
+	</resultMap>
+
+	<select id="queryByCaseId" resultMap="UserCaseComment" >
+		SELECT * 
+		FROM user_case_comment 
+		WHERE case_id = #{caseId}
+		ORDER BY time DESC
+	</select>
+	
+	<select id="queryByCaseIdAndIdAndSize" resultMap="UserCaseComment" >
+		SELECT * 
+		FROM user_case_comment u
+		WHERE u.case_id = #{caseId} and u.time &lt; 
+		(
+			select time  from user_case_comment where id=#{id}
+		)
+		ORDER BY u.time DESC limit 0,#{size}
+	</select>
+	
+	<select id="queryByCaseIdAndSize" resultMap="UserCaseComment" >
+		SELECT * 
+		FROM user_case_comment u
+		WHERE u.case_id = #{caseId} 
+		ORDER BY u.time DESC limit 0,#{size}
+	</select>
+
+	<insert id="add"  parameterType="com.envision.envservice.entity.dto.UserCaseComment"  useGeneratedKeys="true"  keyProperty="id">
+		INSERT INTO user_case_comment (
+			case_id, user_id, comment, anonymous, time
+		) VALUES (
+			#{caseId}, #{userId}, #{comment}, #{anonymous}, #{time}
+		)
+	</insert>
+	
+	<select id="queryById" resultMap="UserCaseComment" >
+		SELECT * 
+		FROM user_case_comment 
+		WHERE id = #{id}
+	</select>
+
+</mapper>

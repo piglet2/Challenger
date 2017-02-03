@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.SpiritDao">
+	<resultMap type="com.envision.envservice.entity.dto.PraiseDetail" id="PraiseDetail">
+		<id column="id" property="id"/>
+		<result column="target_user_id" property="targetUserId"/>
+		<result column="user_id" property="userId"/>
+		<result column="item_id" property="itemId"/>
+		<result column="user_p_surplus" property="userPSurplus"/>
+		<result column="p_type" property="pType"/>
+		<result column="earmark" property="earmark"/>
+		<result column="dimensionality" property="dimensionality"/>
+		<result column="operation" property="operation"/>
+		<result column="cts" property="cts"/>
+		<result column="target_dept_id" property="targetDeptId"/>
+		<result column="user_dept_id" property="userDeptId"/>
+		<result column="from" property="from"/>
+		<result column="level_relation" property="levelRelation"/>
+	</resultMap>
+
+	<select id="queryByUserId" parameterType="string" resultMap="PraiseDetail">
+		SELECT `id`,`target_user_id`,`user_id`,`item_id`,`p_type`,`dimensionality`,`operation`, `cts`
+		FROM `praise_detail`
+		WHERE `target_user_id` = #{userId}
+	</select>
+	
+	<insert id="addPraiseDetail" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.PraiseDetail">
+		INSERT INTO `praise_detail` (`target_user_id`,`user_id`,`item_id`,`user_p_surplus`,`p_type`,`cts`,
+		`earmark`,`dimensionality`,`operation`,`target_dept_id`,`user_dept_id`,`from`,`level_relation`)
+		VALUES (#{targetUserId},#{userId},#{itemId},#{userPSurplus},#{pType},#{cts},
+		#{earmark},#{dimensionality},#{operation},#{targetDeptId},#{userDeptId},#{from},#{levelRelation})
+	</insert>
+	
+	<select id="queryTodayPraiseDetail" parameterType="com.envision.envservice.entity.bo.PraiseDetailBo" resultMap="PraiseDetail">
+		SELECT `id`,`target_user_id`,`user_id`,`item_id`,`p_type`,`dimensionality`,`operation`,`cts`
+		FROM `praise_detail`
+		WHERE `target_user_id` = #{targetUserId}
+		AND `user_id` =#{userId}
+		AND `item_id` =#{itemId}
+		AND `dimensionality`= #{dimensionality}
+		AND `cts`&gt;=#{startTime}
+		AND `cts`&lt;#{endTime}
+		<if test="pType !=null ">
+			AND `p_type`= #{pType}
+		</if>
+	</select>
+	
+	<select id="queryPraiseDetailByPdo" parameterType="com.envision.envservice.entity.bo.PraiseDetailBo" resultMap="PraiseDetail">
+		SELECT `id`,`target_user_id`,`user_id`,`item_id`,`p_type`,`dimensionality`,`operation`,`cts`
+		FROM `praise_detail`
+		WHERE 1 = 1 
+		<if test="targetUserId !=null ">
+			AND `target_user_id` = #{targetUserId}
+		</if>
+		<if test="userId !=null ">
+			AND `user_id` =#{userId}
+		</if>
+		<if test="itemId !=null ">
+			AND `item_id` =#{itemId}
+		</if>
+		<if test="dimensionality !=null ">
+			AND `dimensionality` =#{dimensionality}
+		</if>
+		<if test="startTime !=null ">
+			AND `cts`&gt;=#{startTime}
+		</if>
+		<if test="startTime !=null ">
+			AND `cts`&lt;#{endTime}
+		</if>
+		<if test="pType !=null ">
+			AND `p_type`= #{pType}
+		</if>
+	</select>
+	
+	<select id="queryMatch" resultMap="PraiseDetail">
+		SELECT *
+		FROM `praise_detail` 
+		WHERE 1 = 1 
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="pType != null">
+				and p_type = #{pType}
+			</if>
+			<if test="operation != null">
+				and operation = #{operation}
+			</if>
+	</select>
+	
+	<select id="queryByIds" resultMap="PraiseDetail" >
+		SELECT *
+		FROM `praise_detail`
+		WHERE
+			id IN
+			(
+				<foreach collection="array" item="item" separator="," >
+					#{item}
+				</foreach>
+			)
+	</select>
+</mapper> 

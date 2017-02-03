@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.WordRateDao">
+
+	<resultMap id="WordRate" type="com.envision.envservice.entity.dto.WordRate" >
+		<id property="id" column="id" />
+		<result property="periodId" column="period_id" />
+		<result property="managerId" column="manager_id" />
+		<result property="userId" column="user_id" />
+		<result property="rate" column="rate" />
+		<result property="cts" column="cts" />
+		
+	</resultMap>
+
+	<insert id="addWordRate" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.WordRate">
+		INSERT INTO word_rate (
+				period_id, manager_id,user_id,rate
+			) VALUES (
+				#{periodId}, #{managerId},#{userId},#{rate}
+			)
+	</insert>
+	
+	
+	<select id="queryByPeriodIdAndManagerIdAndUserId"   resultMap="WordRate" >
+		SELECT * FROM word_rate 
+		WHERE period_id=#{periodId} and manager_id=#{managerId}  and user_id=#{userId} 
+	</select>
+	
+	<select id="queryByManagerId"   resultMap="WordRate" >
+		SELECT * FROM word_rate 
+		WHERE  manager_id = #{managerId} 
+	</select>
+	
+	
+	<delete id="deleteByPeriodIdAndManagerIdAndUserId"   parameterType="int">
+		delete from word_rate 
+		WHERE period_id=#{periodId} and manager_id = #{managerId}  and user_id=#{userId}
+	</delete>
+	
+</mapper>

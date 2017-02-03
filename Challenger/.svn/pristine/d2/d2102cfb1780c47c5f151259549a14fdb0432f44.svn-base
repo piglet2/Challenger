@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.PeriodInfoDao">
+	<resultMap type="com.envision.envservice.entity.dto.PeriodInfo" id="PeriodInfo">
+		<id column="id" property="id"/>
+		<result column="s_time" property="sTime"/>
+		<result column="e_time" property="eTime"/>
+		<result column="desc" property="desc"/>
+		<result column="cts" property="cts"/>
+		<result column="praise_num" property="praiseNum"/>
+	</resultMap>
+
+	<select id="queryByDate" parameterType="java.util.Date" resultMap="PeriodInfo">
+		SELECT `id`,`s_time`,`e_time`,`desc`,`cts`,`praise_num`
+		FROM `period_info`
+		WHERE `s_time` &lt;= #{date} AND e_time &gt;= #{date}
+	</select>
+</mapper> 

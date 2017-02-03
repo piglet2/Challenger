@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.UserCasePriseRecordDao">
+
+	<resultMap id="UserCasePriseRecord" type="com.envision.envservice.entity.dto.UserCasePriseRecord" >
+		<id property="id" column="id" />
+		<result property="caseId" column="case_id" />
+		<result property="userId" column="user_id" />
+		<result property="operation" column="operation" />
+		<result property="item" column="item" />
+		<result property="time" column="time" />
+	</resultMap>
+	
+
+	<insert id="createPriseDetail" parameterType="com.envision.envservice.entity.dto.UserCasePriseRecord">
+		INSERT INTO user_case_prise_record
+			(
+				case_id, user_id, operation, item, time
+			)
+		VALUES
+			(
+				#{caseId}, #{userId}, #{operation}, #{item}, #{time}
+			)
+	</insert>
+	
+	<select id="queryByInterval" resultMap="UserCasePriseRecord" >
+		SELECT *
+		FROM user_case_prise_record
+		WHERE case_id = #{caseId} 
+			AND user_id = #{userId}
+			AND operation = #{operation}
+			AND time &gt;= #{start}
+			AND time &lt; #{end}
+		ORDER BY time DESC
+	</select>
+
+</mapper>

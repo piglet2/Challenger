@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.envision.envservice.dao.EvaluationPeriodDao">
+
+	<resultMap id="EvaluationPeriod" type="com.envision.envservice.entity.dto.EvaluationPeriod" >
+		<id property="id" column="id" />
+		<result property="periodId" column="period_id" />
+		<result property="periodDateFrom" column="period_date_from" />
+		<result property="periodDateTo" column="period_date_to" />
+		<result property="des" column="des" />
+		<result property="cts" column="cts" />
+	</resultMap>
+	
+	<select id="queryLastEvaluationPeriod" resultMap="EvaluationPeriod">
+			SELECT * FROM evaluation_period  ORDER BY id DESC LIMIT 1 
+	</select>
+	
+	<select id="queryBycts" resultMap="EvaluationPeriod">
+			select * from evaluation_period ORDER BY cts desc
+	</select>
+	
+	<select id="queryManagerId">
+			select DISTINCT manager_id from sap_empjob order by manager_id
+	</select>
+
+	<insert id="addEvaluationPeriod" useGeneratedKeys="true" keyProperty="id" parameterType="com.envision.envservice.entity.dto.EvaluationPeriod">
+			INSERT INTO evaluation_period (
+			period_id, period_date_from, period_date_to, des
+		) VALUES (
+			#{periodId}, #{periodDateFrom}, #{periodDateTo}, #{des}
+		)
+	</insert>
+	
+	<select id="queryLast" resultMap="EvaluationPeriod" >
+			select * from evaluation_period 
+       		where id  &lt; 
+       		(select id from evaluation_period where period_id = #{periodId})
+			ORDER BY id desc LIMIT 1
+	</select>
+	
+	<select id="queryNext" resultMap="EvaluationPeriod" >
+			select * from evaluation_period 
+       		where id  &gt;
+       		(select id from evaluation_period where period_id = #{periodId})
+			ORDER BY id LIMIT 1
+	</select>
+	
+	<select id="queryByPeriodId" resultMap="EvaluationPeriod" >
+			select * from evaluation_period 
+       		where period_id=#{periodId}
+	</select>
+	
+	<select id="queryFirst" resultMap="EvaluationPeriod" >
+			select * from evaluation_period order by id
+	</select>
+	
+	<select id="queryLastOne" resultMap="EvaluationPeriod" >
+		select * from evaluation_period order by id desc
+	</select>
+	
+	<select id="queryByEvaluationRate" resultMap="EvaluationPeriod" >
+		select * from evaluation_period order by id desc LIMIT 1,6
+	</select>
+	
+	
+</mapper>
